@@ -31,9 +31,10 @@ namespace UserRegister.Core.Repositories
 
         public async Task<User> CreateUser(User user)
         {
-            var id = this._userData.getStore().ToArray().Length;
-            user.Id = id;
-            this._userData.getStore().Append(user);
+            var store = this._userData.getStore();
+            user.Id = store.ToArray().Length + 1;
+            var newData = store.Append(user);
+            this._userData.updateStore(newData);
             await Task.Delay(10);
             return user;
         }
