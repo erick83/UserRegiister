@@ -8,6 +8,7 @@ namespace UserRegister.Core.Interface
 {
     public interface IUsersRepository
     {
+        
         Task<IEnumerable<User>> GetUsers();
         Task<User> GetUser(int id);
         Task<User> CreateUser(User user);

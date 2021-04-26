@@ -10,45 +10,37 @@ namespace UserRegister.Core.Repositories
 {
     public class UsersRepository : IUsersRepository
     {
-        private IEnumerable<User> _userData;
-        public UsersRepository()
+        private IMainStore _userData;
+        public UsersRepository(IMainStore store)
         {
-            this._userData = Enumerable.Range(1, 10).Select(x => new User
-            {
-                Id = x,
-                UserId = $"User-{x}",
-                Name = $"UserName-{x}",
-                LastName = $"UserLastName-{x}",
-                PhotoURL = "https://via.placeholder.com/150",
-                Data = "test"
-            });
+            this._userData = store;
         }
 
         public async Task<IEnumerable<User>> GetUsers()
         {
             await Task.Delay(10);
-            return _userData;
+            return _userData.getStore();
         }
 
         public async Task<User> GetUser(int id)
         {
-            var user = _userData.Where(item => item.Id == id);
+            var user = _userData.getStore().Where(item => item.Id == id);
             await Task.Delay(10);
             return user.First();
         }
 
         public async Task<User> CreateUser(User user)
         {
-            var id = this._userData.ToArray().Length;
+            var id = this._userData.getStore().ToArray().Length;
             user.Id = id;
-            this._userData.Append(user);
+            this._userData.getStore().Append(user);
             await Task.Delay(10);
             return user;
         }
 
         public async Task<User> UpdateUser(User user)
         {
-            var updatedData = this._userData.Select(item =>
+            var updatedData = this._userData.getStore().Select(item =>
             {
                 if (item.Id == user.Id)
                 {
@@ -58,7 +50,7 @@ namespace UserRegister.Core.Repositories
                 return item;
             });
 
-            this._userData = updatedData;
+            this._userData.updateStore(updatedData);
 
             await Task.Delay(10);
 
@@ -67,12 +59,12 @@ namespace UserRegister.Core.Repositories
 
         public async Task<IEnumerable<User>> DeleteUser(int id)
         {
-            var updateData = this._userData.Where(item => item.Id != id);
-            this._userData = updateData;
+            var updatedData = this._userData.getStore().Where(item => item.Id != id);
+            this._userData.updateStore(updatedData);
 
             await Task.Delay(10);
 
-            return updateData;
+            return this._userData.getStore();
         }
     }
 }

@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UserRegister.Core.Interface;
 using UserRegister.Core.Repositories;
+using UserRegister.Core.Store;
 
 namespace UserRegister.Api
 {
@@ -30,6 +31,10 @@ namespace UserRegister.Api
             services.AddCors();
             services.AddControllers();
             services.AddTransient<IUsersRepository, UsersRepository>();
+
+            // Inyecta un singleton que funciona como store, para no usar una base de datos.
+            var store = new MainStore();
+            services.AddSingleton<IMainStore>(store);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
